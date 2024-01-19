@@ -208,6 +208,7 @@ class TicketSearch:
     def search_start(self):
         if self.debug:
             print(self.url)
+        push_instance.push(f"\n\nNew search ({self.listing_name}) started\n\n")
         search_thread = threading.Thread(target=self.search_loop)
         search_thread.start()
         read_slack_thread = threading.Thread(target=self.slack_thread)
