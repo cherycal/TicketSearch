@@ -32,6 +32,13 @@ class TicketSearch:
         self.loop_sleep_interval = 2
 
     @property
+    def debug(self):
+        return self._debug
+
+    @debug.setter
+    def debug(self, value: bool):
+        self._debug = value
+    @property
     def price_limit(self):
         return self._price_limit
 
@@ -91,10 +98,9 @@ class TicketSearch:
                     self.listings[listing_id] = msg
                     push_instance.logger_instance.warning(msg)
                     push_instance.push(f"New listing:\n{msg}", title="Tickets")
-                    # if str(i['section'])[0] != "3":
-                    #     push_instance.send_message(f"{msg}", subject="Ticket found!")
                 else:
-                    # push_instance.logger_instance.info(f"Skipping listing ID: {listing_id}")
+                    if self.debug:
+                        push_instance.logger_instance.info(f"Skipping listing ID: {listing_id}")
                     pass
             else:
                 if self.debug:
@@ -183,6 +189,10 @@ class TicketSearch:
             self.report_listings()
         elif text.upper() == "SL":
             self.search_listings()
+        elif text.upper() == "DEBUG ON":
+            self.debug = True
+        elif text.upper() == "DEBUG OFF":
+            self.debug = False
         elif text.upper() == "PL":
             push_instance.push(f"Price limit is currently {self.price_limit}")
         else:
@@ -216,22 +226,6 @@ def search_start():
 def main():
     search_thread = threading.Thread(target=search_start)
     search_thread.start()
-
-    # while True:
-    #     now = datetime.datetime.now().timestamp()
-    #     print(f"S{int(self.main_loop_sleep + self.last_report_time - now)} ", end='')
-    #     if datetime.datetime.now().timestamp() - self.last_report_time > self.main_loop_sleep:
-    #         self.single_run()
-    #         self.last_report_time = datetime.datetime.now().timestamp()
-    #     time.sleep(5)
-
-    # if self.threaded is True:
-    #     process_league_thread = threading.Thread(target=self.run_leagues, kwargs={'sleep_interval': sleep_interval})
-    #     scores_thread = threading.Thread(target=self.scoreboard_thread)
-    #     read_slack_thread = threading.Thread(target=self.slack_thread)
-    #     process_league_thread.start()
-    #     scores_thread.start()
-    #     read_slack_thread.start()
 
 
 if __name__ == "__main__":
