@@ -38,6 +38,7 @@ class TicketSearch:
     @debug.setter
     def debug(self, value: bool):
         self._debug = value
+
     @property
     def price_limit(self):
         return self._price_limit
