@@ -154,7 +154,7 @@ class TicketSearch:
 
     def report_listings(self):
         push_instance.push(f"\nListings report:\n")
-        if len(self.listings) == 0:
+        if len(self.listings) > 0:
             for listing in self.listings.keys():
                 push_instance.push(self.listings[listing])
                 push_instance.push(f"\n")
