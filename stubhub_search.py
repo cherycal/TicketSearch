@@ -18,7 +18,7 @@ import time
 
 class TicketSearch:
 
-    def __init__(self, url, name="None given", debug = False,
+    def __init__(self, url, name="No name given", debug = False,
                  price_limit=250, upper_level_price_limit=100, loop_sleep=120):
         self.url = url
         self.listing_name = name
@@ -205,8 +205,16 @@ class TicketSearch:
             self.search_listings()
             tools.sleep_phase(sleep_total=self.loop_sleep, sleep_interval=self.loop_sleep_interval)
 
+    def search_start(self):
+        if self.debug:
+            print(self.url)
+        search_thread = threading.Thread(target=self.search_loop)
+        search_thread.start()
+        read_slack_thread = threading.Thread(target=self.slack_thread)
+        read_slack_thread.start()
 
-def search_start():
+
+def main():
     url = ("https://www.stubhub.com/los-angeles-kings-los-angeles-tickets-1-20-2024/event/"
            "151887329/?quantity=2&estimatedFees=true&listingQty=&sections=1133534%2C"
            "1133540%2C1133543%2C1133539%2C1133538%2C1133544%2C1133545%2C1133529%2C"
@@ -215,18 +223,9 @@ def search_start():
            "1504157%2C1505140%2C1504511%2C1504155%2C1504159%2C1504513%2C1504519%2C"
            "1505139%2C1504154%2C1504523%2C1504521%2C1504158%2C1504530%2C1504515%2C"
            "1133342&ticketClasses=2432%2C4741%2C5105%2C5107%2C5211%2C5307&rows=&seatTypes=")
-
     search = TicketSearch(url, name="Kings", price_limit=230, loop_sleep=120, debug=False)
-    if search.debug:
-        print(url)
-    read_slack_thread = threading.Thread(target=search.slack_thread)
-    read_slack_thread.start()
-    search.search_loop()
+    search.search_start()
 
-
-def main():
-    search_thread = threading.Thread(target=search_start)
-    search_thread.start()
 
 
 if __name__ == "__main__":
