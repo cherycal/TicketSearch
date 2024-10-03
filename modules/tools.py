@@ -11,7 +11,7 @@ import colorlog
 import pytz
 # from selenium import webdriver
 
-import push
+from modules import push
 
 # DEBUG: Detailed information, typically of interest only when diagnosing problems.
 
@@ -35,8 +35,6 @@ import push
 push_instance = push.Push(calling_function="tools.py")
 
 
-
-
 def get_logger(logfilename='./logs/pushlog.log',
                logformat='\npush.py logger: time=%(asctime)s level=%(levelname)s '
                          'calling_function=%(funcName)s lineno=%(lineno)d\nmsg=%(message)s\n'
@@ -55,7 +53,7 @@ def get_logger(logfilename='./logs/pushlog.log',
         'CRITICAL': 'black,bg_red',
     }
     colorlog.basicConfig(format=colorlog_format, log_colors=log_colors)
-    #logfilename = './logs/pushlog.log'
+    # logfilename = './logs/pushlog.log'
     logger_instance = logging.getLogger(__name__)
     logger_instance.setLevel(logging.DEBUG)
 
@@ -65,6 +63,7 @@ def get_logger(logfilename='./logs/pushlog.log',
     logger_instance.addHandler(file_handler)
 
     return logger_instance
+
 
 def print_calling_function():
     print('\n')
@@ -78,6 +77,7 @@ def print_calling_function():
     #      ", " + str(inspect.stack()[-1].lineno))
     print("#############################")
     return
+
 
 def get_platform():
     platforms = {
@@ -165,29 +165,33 @@ def try_wrap(func):
 
 def time_diff(start_time, end_time):
     t1 = datetime.strptime(str(start_time), "%H%M%S")
-    #print('Start time:', t1.time())
+    # print('Start time:', t1.time())
 
     t2 = datetime.strptime(str(end_time), "%H%M%S")
-    #print('End time:', t2.time())
+    # print('End time:', t2.time())
 
     # get difference
     delta = t2 - t1
     return delta
 
+
 def unixtime_from_mlb_format(mlbtimestr):
     return datetime.strptime(mlbtimestr, "%Y-%m-%dT%H:%M:%SZ").timestamp()
+
 
 def unix_gmt():
     nowtime = int(datetime.now().timestamp())
     tzoffset = 3600 * (int(datetime.now(pytz.timezone('America/Tijuana')).strftime("%z")) / -100)
-    #print(f'now: {nowtime} txoffset: {tzoffset}')
+    # print(f'now: {nowtime} txoffset: {tzoffset}')
     return nowtime + tzoffset
+
 
 def local_time_from_mlb_format(mlbtimestr):
     gmt_game_time = datetime.strptime(mlbtimestr, "%Y-%m-%dT%H:%M:%SZ")
     tzoffset = (int(datetime.now(pytz.timezone('America/Tijuana')).strftime("%z")) / -100)
     game_time = gmt_game_time - timedelta(hours=tzoffset)
     return game_time
+
 
 def local_hhmmss_from_mlb_format(mlbtimestr):
     gmt_game_time = datetime.strptime(mlbtimestr, "%Y-%m-%dT%H:%M:%SZ")
@@ -198,6 +202,8 @@ def local_hhmmss_from_mlb_format(mlbtimestr):
 
 def test_print():
     print("Hello world")
+
+
 def sleep_phase(sleep_total=60, sleep_interval=5):
     time.sleep(1)
     sleep_remaining = sleep_total
@@ -207,6 +213,8 @@ def sleep_phase(sleep_total=60, sleep_interval=5):
         sleep_remaining -= sleep_interval
         time.sleep(sleep_interval)
     return
+
+
 class Process(object):
 
     def __init__(self, logger_instance=None):
